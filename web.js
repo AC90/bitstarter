@@ -3,9 +3,6 @@ var app = express.createServer(express.logger());
 var fs = require('fs');
 var buffer1 = new Buffer( fs.readFileSync('index.html') );
 
-//buffer1.write( fs.readFileSync('index.html') )
-//buffer1.write( "monkey 1" )
-
 var app = express.createServer(express.logger());
 
 app.get('/', function(request, response) {
