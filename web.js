@@ -9,7 +9,7 @@ var app = express.createServer(express.logger());
 
 app.get('/', function(request, response) {
    response.send(
-     buffer1.toString()
+     buffer1.toString('utf-8')
    );
 });
 
