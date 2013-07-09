@@ -1,9 +1,9 @@
 var express = require('express');
 var fs = require('fs');
-var buffer1 = new Buffer( 256 );
+var buffer1 = new Buffer( );
 
-//buffer1.write( fs.readFileSync('index.html') )
-buffer1.write( "monkey 1" )
+buffer1.write( fs.readFileSync('index.html') )
+//buffer1.write( "monkey 1" )
 
 var app = express.createServer(express.logger());
 
