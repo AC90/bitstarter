@@ -42,11 +42,28 @@ var cheerioHtmlFile = function(htmlfile) {
     return cheerio.load(fs.readFileSync(htmlfile));
 };
 
+
 var loadChecks = function(checksfile) {
     return JSON.parse(fs.readFileSync(checksfile));
 };
 
-var checkURL = function(urlAddress, checksfile){
+var checkHtmlURL = function(urlAddress, checksfile){
+  rest.get(urlAddress).on('complete', function(data) {
+//    console.log("1");
+//    console.log(" checksfile : " + checksfile);
+//    console.log(" data : " + data );
+    $ = cheerio.load(data);
+    var checks = loadChecks(checksfile).sort();
+    var out = {};
+    for(var ii in checks) {
+        var present = $(checks[ii]).length > 0;
+        out[checks[ii]] = present;
+    }
+
+    var outJson = JSON.stringify(out, null, 4);
+    console.log(outJson);    
+//    return out;    
+  })
 
 };
 
@@ -71,11 +88,18 @@ if(require.main == module) {
     program
         .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
         .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
-        .option('-u, --url <url>', 'URL to file to check', clone(assertFileExists), HTMLFILE_DEFAULT)        
+        .option('-u, --url <url>', 'URL to file to check')        
         .parse(process.argv);
-    var checkJson = checkHtmlFile(program.file, program.checks);
-    var outJson = JSON.stringify(checkJson, null, 4);
-    console.log(outJson);
+
+    if (program.url){
+      //Have a URL
+      checkHtmlURL(program.url, program.checks);      
+    } else if (program.file){
+      //Have a file
+      var checkJson = checkHtmlFile(program.file, program.checks);
+      var outJson = JSON.stringify(checkJson, null, 4);
+      console.log(outJson);
+    }
 } else {
     exports.checkHtmlFile = checkHtmlFile;
 }
